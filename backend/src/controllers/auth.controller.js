@@ -49,5 +49,15 @@ export const login = async (req, res) => {
     }
 }
 export const logout = (req, res) => {
-    res.send("logout")
+    try {
+        res.cookie("jwt", "", { maxAge: 0 });
+        res.status(200).json({ message: "Logout successful" });
+    } catch (error) {
+        console.log("Error in logout");
+        res.status(500).json({ message: "Internal server error" })
+    }
+}
+
+export const updateProfile = async (req, res) => {
+
 }
