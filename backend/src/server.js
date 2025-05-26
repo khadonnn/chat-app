@@ -4,9 +4,11 @@ import authRoutes from "./routes/auth.route.js"
 import cookieParser from "cookie-parser"
 import { connectDB } from "./lib/db.js"
 import messageRoutes from "./routes/message.route.js"
+import cors from "cors"
 const PORT = process.env.PORT | 8080
 const app = express()
 
+app.use(cors({ credentials: true, origin: "http://localhost:5173" }))
 app.use(cookieParser())
 app.use(express.json())
 app.use("/api/auth", authRoutes)
