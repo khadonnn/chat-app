@@ -13,8 +13,11 @@ import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import ScrambledText from '../components/ui/ScrambledText';
 import LoginCard from '../components/LoginCard';
+import SplitTextGsap from '../components/SplitText.jsx';
+import FallingTextDemo from '../components/FallingTextDemo.jsx';
 const SignUpPage = () => {
     const [showPassword, setShowPassword] = useState(false);
+
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -58,9 +61,9 @@ const SignUpPage = () => {
                             >
                                 <MessageSquare className='size-6 text-primary' />
                             </div>
-                            <h1 className='text-2xl font-bold mt-2'>
-                                Create Account
-                            </h1>
+                            <div className=''>
+                                <SplitTextGsap />
+                            </div>
                             <ScrambledText
                                 className='scrambled-text-demo !top-0 !m-0 tracking-normal'
                                 radius={20}
@@ -190,7 +193,9 @@ const SignUpPage = () => {
             </div>
 
             {/* right side */}
-            <LoginCard />
+            <div className='mb-12'>
+                <LoginCard />
+            </div>
         </div>
     );
 };
