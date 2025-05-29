@@ -1,12 +1,15 @@
+import { memo } from 'react';
 import SplitText from './ui/SplitText.jsx';
 
 const handleAnimationComplete = () => {
     console.log('All letters have animated!');
 };
-const SplitTextGsap = () => {
+
+const SplitTextGsap = memo(({ mode }) => {
+    const displayText = mode === 'create' ? 'Create Account' : 'Login';
     return (
         <SplitText
-            text='Creat Account'
+            text={displayText}
             className='text-2xl font-semibold text-center'
             delay={100}
             duration={0.6}
@@ -20,5 +23,5 @@ const SplitTextGsap = () => {
             onLetterAnimationComplete={handleAnimationComplete}
         />
     );
-};
+});
 export default SplitTextGsap;

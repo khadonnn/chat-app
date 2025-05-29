@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 import SettingPage from './pages/SettingPage';
 import ProfilePage from './pages/ProfilePage';
 import { Loader } from 'lucide-react';
+import { Toaster } from 'react-hot-toast';
 const App = () => {
     const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
 
@@ -45,6 +46,7 @@ const App = () => {
                     }
                 />
             </Routes>
+            <Toaster />
         </div>
     );
 };
