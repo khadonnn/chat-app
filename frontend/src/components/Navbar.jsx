@@ -38,7 +38,10 @@ const Navbar = () => {
                                             <div className='w-10 rounded-full'>
                                                 <img
                                                     alt='Tailwind CSS Navbar component'
-                                                    src='https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'
+                                                    src={
+                                                        authUser.profilePic ||
+                                                        '/avatar.png'
+                                                    }
                                                 />
                                             </div>
                                         </div>
@@ -82,7 +85,7 @@ const Navbar = () => {
                 </div>
             </header>
             {authUser && (
-                <div className=' hidden md:flex fixed bottom-1 left-1/2 -translate-x-1/2 justify-center items-center'>
+                <div className=' hidden md:flex fixed bottom-1 left-1/2 -translate-x-1/2 justify-center items-center '>
                     <DockNavbar />
                 </div>
             )}

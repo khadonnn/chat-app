@@ -22,7 +22,7 @@ const App = () => {
                 <Loader className='w-10 h-10 animate-spin' />
             </div>
         );
-    console.log(authUser);
+    // console.log(authUser);
     return (
         <div className=''>
             <Navbar />
