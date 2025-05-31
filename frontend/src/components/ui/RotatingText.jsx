@@ -8,7 +8,7 @@ import {
     useMemo,
     useState,
 } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 
 function cn(...classes) {
     return classes.filter(Boolean).join(' ');
@@ -164,7 +164,7 @@ const RotatingText = forwardRef((props, ref) => {
     }, [next, rotationInterval, auto]);
 
     return (
-        <motion.span
+        <Motion.span
             className={cn(
                 'flex flex-wrap whitespace-pre-wrap relative',
                 mainClassName,
@@ -179,7 +179,7 @@ const RotatingText = forwardRef((props, ref) => {
                 mode={animatePresenceMode}
                 initial={animatePresenceInitial}
             >
-                <motion.div
+                <Motion.div
                     key={currentTextIndex}
                     className={cn(
                         splitBy === 'lines'
@@ -205,7 +205,7 @@ const RotatingText = forwardRef((props, ref) => {
                                 )}
                             >
                                 {wordObj.characters.map((char, charIndex) => (
-                                    <motion.span
+                                    <Motion.span
                                         key={charIndex}
                                         initial={initial}
                                         animate={animate}
@@ -228,7 +228,7 @@ const RotatingText = forwardRef((props, ref) => {
                                         )}
                                     >
                                         {char}
-                                    </motion.span>
+                                    </Motion.span>
                                 ))}
                                 {wordObj.needsSpace && (
                                     <span className='whitespace-pre'> </span>
@@ -236,9 +236,9 @@ const RotatingText = forwardRef((props, ref) => {
                             </span>
                         );
                     })}
-                </motion.div>
+                </Motion.div>
             </AnimatePresence>
-        </motion.span>
+        </Motion.span>
     );
 });
 

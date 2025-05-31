@@ -9,8 +9,8 @@ const Navbar = () => {
     return (
         <>
             <header
-                className='bg-base-100 border-b border-base-300 fixed w-full top-0 z-40 
-        backdrop-blur-lg bg-base-100/80'
+                className='bg-base-100 border-b border-base-300 fixed w-full top-0 !z-[9999] 
+        backdrop-blur-lg bg-base-100/80 '
             >
                 <div className='container mx-auto px-4 h-16 '>
                     <div className='flex items-center justify-between h-full'>
@@ -26,10 +26,10 @@ const Navbar = () => {
                             </Link>
                         </div>
 
-                        <div className='flex items-center gap-2'>
+                        <div className='flex items-center'>
                             {authUser && (
                                 <>
-                                    <div className='dropdown dropdown-center'>
+                                    <div className='dropdown dropdown-end'>
                                         <div
                                             tabIndex={0}
                                             role='button'
@@ -47,7 +47,7 @@ const Navbar = () => {
                                         </div>
                                         <ul
                                             tabIndex={0}
-                                            className='menu menu-sm dropdown-content bg-base-200 rounded-box z-1 mt-4 w-52 p-2 shadow-md ring-1 ring-white/10 '
+                                            className='menu menu-sm dropdown-content bg-base-200 rounded-box z-1  w-54 p-2  shadow-md ring-1 ring-white/10 '
                                         >
                                             <li>
                                                 <Link to={'/profile'}>
@@ -85,7 +85,7 @@ const Navbar = () => {
                 </div>
             </header>
             {authUser && (
-                <div className=' hidden md:flex fixed bottom-1 left-1/2 -translate-x-1/2 justify-center items-center '>
+                <div className=' hidden md:flex fixed bottom-1 left-1/2 -translate-x-1/2 justify-center items-center !z-[999] '>
                     <DockNavbar />
                 </div>
             )}

@@ -1,4 +1,4 @@
-import { Archive, House, Settings, User } from 'lucide-react';
+import { Compass, House, Settings, User } from 'lucide-react';
 import Dock from './ui/Dock';
 import { Link } from 'react-router-dom';
 const items = [
@@ -12,11 +12,11 @@ const items = [
     },
     {
         icon: (
-            <Link to='/archive'>
-                <Archive size={18} />
+            <Link to='/discover'>
+                <Compass size={18} />
             </Link>
         ),
-        label: 'Archive',
+        label: 'Discover',
     },
     {
         icon: (
@@ -42,7 +42,7 @@ const DockNavbar = () => {
             panelHeight={40}
             baseItemSize={40}
             magnification={60}
-            className='rounded-lg'
+            className='rounded-lg !z-[9999]'
         />
     );
 };
