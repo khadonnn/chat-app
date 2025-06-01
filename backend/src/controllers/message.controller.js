@@ -1,5 +1,6 @@
 import Message from "../models/message.model.js";
-
+import User from "../models/user.model.js";
+import cloudinary from "../lib/cloudinary.js";
 export const getUsersForSidebar = async (req, res) => {
     try {
         const loggInUserId = req.user._id;
@@ -44,7 +45,7 @@ export const sendMessage = async (req, res) => {
             senderId,
             receiverId,
             text,
-            imageUrl
+            image: imageUrl
         })
         await newMessage.save()
         //todo: realtime chat =>socket.io

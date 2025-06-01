@@ -8,3 +8,6 @@
 > });
 
 #add unsplash api
+
+> tailwind daisyui chat bubble className="truncate" | chat | skeleton |
+> file with onload and onloadend
