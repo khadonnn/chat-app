@@ -9,12 +9,18 @@ const ChatHeader = () => {
             <div className='flex items-center justify-between'>
                 <div className='flex items-center gap-3'>
                     {/* avatar */}
-                    <div className='avatar'>
-                        <div className='size-10 rounded-full relative'>
+                    <div className='avatar relative'>
+                        <div className='size-10 rounded-full '>
                             <img
                                 src={selectedUser.profilePic || '/avatar.png'}
                                 alt={selectedUser.fullName}
+                                className='size-12 object-cover rounded-full'
                             />
+                            {onlineUsers.includes(selectedUser._id) ? (
+                                <span className='absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full ring-2 ring-base-900' />
+                            ) : (
+                                <span className='absolute bottom-0 right-0 w-3 h-3 bg-gray-500 rounded-full ring-2 ring-base-900' />
+                            )}
                         </div>
                     </div>
                     {/* user info */}

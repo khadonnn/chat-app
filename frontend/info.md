@@ -43,3 +43,8 @@ io.emit() is used to send events to all connected clients
 | `socket.on("...")`    | Lắng nghe 1 sự kiện từ client                      |
 | `io.emit("...")`      | Gửi 1 sự kiện tới tất cả client                    |
 | `socket.emit("...")`  | Gửi sự kiện tới client cụ thể này                  |
+
+`getState()`
+
+> zustand use to get all state in useAuthStore
+> const socket= useAuthStore.getState().socket;
