@@ -1,5 +1,5 @@
 import { useChatStore } from '../store/useChatStore';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import MessageInput from './MessageInput';
 import ChatHeader from './ChatHeader';
 import MessageSkeleton from './skeletons/MessageSkeleton';
@@ -15,6 +15,7 @@ const ChatContainer = () => {
         unsubscribeFromMessages,
     } = useChatStore();
     const { authUser } = useAuthStore();
+    const messageEndRef = useRef(null);
     useEffect(() => {
         getMessages(selectedUser._id);
         subcribeToMessages();
@@ -25,6 +26,11 @@ const ChatContainer = () => {
         subcribeToMessages,
         unsubscribeFromMessages,
     ]);
+    //ref
+    useEffect(() => {
+        if (messageEndRef.current && messages)
+            messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }, [messages]);
     if (isMessagesLoading) {
         return (
             <div className='flex-1 flex flex-col overflow-auto'>
@@ -41,6 +47,7 @@ const ChatContainer = () => {
             <div className='flex-1 overflow-y-auto p-4 space-y-4'>
                 {messages.map((message) => (
                     <div
+                        ref={messageEndRef}
                         key={message._id}
                         className={`chat ${
                             message.senderId === authUser._id

@@ -48,3 +48,6 @@ io.emit() is used to send events to all connected clients
 
 > zustand use to get all state in useAuthStore
 > const socket= useAuthStore.getState().socket;
+
+\*fix selecuser send wrong person
+if (newMessage.senderId !== selectedUser.\_id) return;
