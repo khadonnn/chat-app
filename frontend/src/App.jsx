@@ -13,7 +13,8 @@ import NotFound from './pages/NotFound';
 import { useThemeStore } from './store/useThemeStore';
 import DiscoverPage from './pages/DiscoverPage';
 const App = () => {
-    const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
+    const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
+    console.log(onlineUsers);
     const { theme } = useThemeStore();
     useEffect(() => {
         checkAuth();

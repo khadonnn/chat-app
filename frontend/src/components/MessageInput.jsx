@@ -4,18 +4,40 @@ import { Image, Send, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const MessageInput = () => {
+    const [imageFile, setImageFile] = useState(null);
     const [text, setText] = useState('');
     const [imagePreview, setImagePreview] = useState(null);
     const fileInputRef = useRef(null);
 
     const { sendMessage } = useChatStore();
+    // const handleImageChange = (e) => {
+    //     const file = e.target.files[0];
+    //     if (!file.type.startsWith('image/')) {
+    //         toast.error('Please select an image file');
+    //         return;
+    //     }
+
+    //     const reader = new FileReader();
+    //     reader.onloadend = () => {
+    //         setImagePreview(reader.result);
+    //     };
+    //     reader.readAsDataURL(file);
+    // };
+    // const removeImage = () => {
+    //     setImagePreview(null);
+    //     if (fileInputRef.current) fileInputRef.current.value = '';
+    // };
     const handleImageChange = (e) => {
         const file = e.target.files[0];
-        if (!file.type.startsWith('image/')) {
+        if (!file || !file.type.startsWith('image/')) {
             toast.error('Please select an image file');
             return;
         }
 
+        // 👇 Gửi file này lên server qua FormData
+        setImageFile(file);
+
+        // 👇 Chỉ dùng base64 để hiển thị preview
         const reader = new FileReader();
         reader.onloadend = () => {
             setImagePreview(reader.result);
@@ -24,20 +46,37 @@ const MessageInput = () => {
     };
     const removeImage = () => {
         setImagePreview(null);
+        setImageFile(null); // 👈 thêm dòng này
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
+    // muler
     const handleSendMessage = async (e) => {
         e.preventDefault();
-        if (!text.trim() && !imagePreview) return;
+        if (!text.trim() && !imageFile) return;
+
         try {
-            await sendMessage({ text: text.trim(), image: imagePreview });
+            await sendMessage({ text: text.trim(), imageFile });
             setText('');
             setImagePreview(null);
+            setImageFile(null);
             if (fileInputRef.current) fileInputRef.current.value = '';
         } catch (error) {
             console.log(error);
         }
     };
+
+    // const handleSendMessage = async (e) => {
+    //     e.preventDefault();
+    //     if (!text.trim() && !imagePreview) return;
+    //     try {
+    //         await sendMessage({ text: text.trim(), image: imagePreview });
+    //         setText('');
+    //         setImagePreview(null);
+    //         if (fileInputRef.current) fileInputRef.current.value = '';
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // };
     return (
         <div className='p-4 w-full'>
             {imagePreview && (

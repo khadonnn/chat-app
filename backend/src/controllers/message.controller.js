@@ -30,29 +30,64 @@ export const getMessages = async (req, res) => {
     }
 
 }
-
+// multer
 export const sendMessage = async (req, res) => {
     try {
-        const { text, image } = req.body
-        const { id: receiverId } = req.params
-        const senderId = req.user._id
-        let imageUrl = null
-        if (image) {
-            const uploadResponse = await cloudinary.uploader.upload(image, {})
-            imageUrl = uploadResponse.secure_url
+        const { text } = req.body;
+        const { id: receiverId } = req.params;
+        const senderId = req.user._id;
+
+        let imageUrl = null;
+
+        if (req.file) {
+            const result = await new Promise((resolve, reject) => {
+                cloudinary.uploader.upload_stream({ resource_type: 'image' }, (err, result) => {
+                    if (err) reject(err);
+                    else resolve(result);
+                }).end(req.file.buffer);
+            });
+
+            imageUrl = result.secure_url;
         }
+
         const newMessage = new Message({
             senderId,
             receiverId,
             text,
-            image: imageUrl
-        })
-        await newMessage.save()
-        //todo: realtime chat =>socket.io
+            image: imageUrl,
+        });
 
-        res.status(200).json(newMessage)
+        await newMessage.save();
+
+        res.status(200).json(newMessage);
     } catch (error) {
-        console.log("Error in sendMessage");
-        res.status(500).json({ message: "Internal server error" })
+        console.error("Error in sendMessage:", error);
+        res.status(500).json({ message: "Internal server error" });
     }
-}
+};
+
+// export const sendMessage = async (req, res) => {
+//     try {
+//         const { text, image } = req.body
+//         const { id: receiverId } = req.params
+//         const senderId = req.user._id
+//         let imageUrl = null
+//         if (image) {
+//             const uploadResponse = await cloudinary.uploader.upload(image, {})
+//             imageUrl = uploadResponse.secure_url
+//         }
+//         const newMessage = new Message({
+//             senderId,
+//             receiverId,
+//             text,
+//             image: imageUrl
+//         })
+//         await newMessage.save()
+//         //todo: realtime chat =>socket.io
+
+//         res.status(200).json(newMessage)
+//     } catch (error) {
+//         console.log("Error in sendMessage");
+//         res.status(500).json({ message: "Internal server error" })
+//     }
+// }
