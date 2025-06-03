@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { useChatStore } from '../store/useChatStore';
 import { Image, Send, X } from 'lucide-react';
 import toast from 'react-hot-toast';
-
+import EmojiPicker from 'emoji-picker-react';
 const MessageInput = () => {
     const [imageFile, setImageFile] = useState(null);
     const [text, setText] = useState('');
@@ -10,23 +10,7 @@ const MessageInput = () => {
     const fileInputRef = useRef(null);
 
     const { sendMessage } = useChatStore();
-    // const handleImageChange = (e) => {
-    //     const file = e.target.files[0];
-    //     if (!file.type.startsWith('image/')) {
-    //         toast.error('Please select an image file');
-    //         return;
-    //     }
-
-    //     const reader = new FileReader();
-    //     reader.onloadend = () => {
-    //         setImagePreview(reader.result);
-    //     };
-    //     reader.readAsDataURL(file);
-    // };
-    // const removeImage = () => {
-    //     setImagePreview(null);
-    //     if (fileInputRef.current) fileInputRef.current.value = '';
-    // };
+    const [open, setOpen] = useState(false);
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (!file || !file.type.startsWith('image/')) {
@@ -101,14 +85,33 @@ const MessageInput = () => {
                 onSubmit={handleSendMessage}
                 className='flex items-center gap-2'
             >
-                <div className='flex-1 flex gap-2'>
+                <div className='flex-1 flex gap-2 items-center   '>
                     <input
                         type='text'
-                        className='w-full input input-bordered rounded-lg input-sm sm:input-md'
+                        className='w-full input input-bordered rounded-lg input-sm sm:input-md relative'
                         placeholder='Type a message...'
                         value={text}
                         onChange={(e) => setText(e.target.value)}
                     />
+                    <div className=''>
+                        <div
+                            className='absolute bottom-7 right-32 cursor-pointer text-xl hidden md:flex'
+                            onClick={() => setOpen((prev) => !prev)}
+                        >
+                            🥰
+                        </div>
+                        {open && (
+                            <div className='absolute  bottom-14 right-14 z-50'>
+                                <EmojiPicker
+                                    onEmojiClick={(emoji) => {
+                                        setText((prev) => prev + emoji.emoji);
+                                        setOpen(false);
+                                    }}
+                                />
+                            </div>
+                        )}
+                    </div>
+
                     <input
                         type='file'
                         className='hidden'
@@ -137,3 +140,20 @@ const MessageInput = () => {
     );
 };
 export default MessageInput;
+// const handleImageChange = (e) => {
+//     const file = e.target.files[0];
+//     if (!file.type.startsWith('image/')) {
+//         toast.error('Please select an image file');
+//         return;
+//     }
+
+//     const reader = new FileReader();
+//     reader.onloadend = () => {
+//         setImagePreview(reader.result);
+//     };
+//     reader.readAsDataURL(file);
+// };
+// const removeImage = () => {
+//     setImagePreview(null);
+//     if (fileInputRef.current) fileInputRef.current.value = '';
+// };
