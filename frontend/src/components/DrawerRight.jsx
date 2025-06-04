@@ -1,6 +1,9 @@
-import { FileText, Image, SquareChevronLeft } from 'lucide-react';
+import { FileText, Image, Palette, Pin, SquareChevronLeft } from 'lucide-react';
+import { useState } from 'react';
+import ChangeTheme from './chat-function/ChangeTheme';
 
 const DrawerRight = () => {
+    const [changeTheme, setChangeTheme] = useState();
     return (
         <div className='drawer drawer-end'>
             <input id='my-drawer-4' type='checkbox' className='drawer-toggle' />
@@ -19,12 +22,12 @@ const DrawerRight = () => {
                     aria-label='close sidebar'
                     className='drawer-overlay'
                 ></label>
-                <ul className='menu bg-base-200 text-base-content min-h-full w-80  [calc(100vh-8rem)] mt-16'>
+                <ul className='menu bg-base-200 text-base-content min-h-[90vh] w-80  mt-16'>
                     {/* Collapse Item 1 */}
                     <li className='hover:bg-base-300 rounded-lg transition-all duration-300'>
                         <details className='collapse collapse-arrow'>
                             <summary className='collapse-title text-lg font-medium'>
-                                Anh va file phuong tien
+                                Ảnh và File phương tiện
                             </summary>
                             <div className='collapse-content'>
                                 <ul className='space-y-1'>
@@ -41,17 +44,29 @@ const DrawerRight = () => {
 
                     {/* Collapse Item 2 */}
                     <li className='hover:bg-base-300 rounded-lg transition-all duration-300'>
-                        <details className='collapse collapse-arrow'>
+                        <details
+                            tabIndex={0}
+                            className='collapse collapse-arrow'
+                        >
                             <summary className='collapse-title text-lg font-medium'>
-                                Tuy chinh doan chat
+                                Tuỳ chỉnh đoạn chat
                             </summary>
                             <div className='collapse-content p-2'>
                                 <ul className='space-y-1'>
+                                    <div className='p-2 rounded hover:bg-base-100 cursor-pointer transition-all duration-300'>
+                                        <li
+                                            onClick={() =>
+                                                setChangeTheme(!changeTheme)
+                                            }
+                                        >
+                                            <Palette /> Theme Change
+                                        </li>
+                                        {changeTheme && (
+                                            <ChangeTheme className='!pt-1 w-full' />
+                                        )}
+                                    </div>
                                     <li className='p-2 rounded hover:bg-base-100 cursor-pointer'>
-                                        Image
-                                    </li>
-                                    <li className='p-2 rounded hover:bg-base-100 cursor-pointer'>
-                                        File
+                                        <Pin /> Ghim
                                     </li>
                                 </ul>
                             </div>

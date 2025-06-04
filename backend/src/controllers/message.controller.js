@@ -71,6 +71,49 @@ export const sendMessage = async (req, res) => {
     }
 };
 
+export const pinMessage = async (req, res) => {
+    try {
+        const { isPinned } = req.body;
+        const messageId = req.params.id;
+
+        const messageToPin = await Message.findById(messageId);
+        if (!messageToPin) {
+            return res.status(404).json({ error: 'Message not found' });
+        }
+
+        if (isPinned) {
+            await Message.updateMany(
+                {
+                    isPinned: true,
+                    $or: [
+                        {
+                            senderId: messageToPin.senderId,
+                            receiverId: messageToPin.receiverId
+                        },
+                        {
+                            senderId: messageToPin.receiverId,
+                            receiverId: messageToPin.senderId
+                        }
+                    ]
+                },
+                { $set: { isPinned: false } }
+            );
+        }
+
+        const updatedMessage = await Message.findByIdAndUpdate(
+            messageId,
+            { isPinned },
+            { new: true }
+        );
+
+        res.json(updatedMessage);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to update pin status' });
+    }
+}
+
+
 // export const sendMessage = async (req, res) => {
 //     try {
 //         const { text, image } = req.body

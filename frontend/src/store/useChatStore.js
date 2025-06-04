@@ -11,6 +11,7 @@ export const useChatStore = create((set, get) => ({
     isTyping: false,
     isSendingMessage: false,
     onlineUsers: [],
+    pinnedMessage: null,
     getUsers: async () => {
         set({ isUserLoading: true });
         try {
@@ -26,7 +27,9 @@ export const useChatStore = create((set, get) => ({
         set({ isMessagesLoading: true });
         try {
             const res = await axiosInstance.get(`/messages/${userId}`);
-            set({ messages: res.data });
+            const messages = res.data
+            const pinned = messages.find((msg) => msg.isPinned) || null;
+            set({ messages, pinnedMessage: pinned });
         } catch (error) {
             toast.error(error.response.data.message);
         } finally {
@@ -72,6 +75,33 @@ export const useChatStore = create((set, get) => ({
         const socket = useAuthStore.getState().socket;
         socket.off("newMessage");
     },
+    pinMessage: async (messageId, isPinned) => {
+        try {
+            const res = await axiosInstance.put(`/messages/${messageId}/pin`, {
+                isPinned,
+            });
+
+            const updatedMessage = res.data; // ✅ dùng res.data, không phải .json()
+
+            set((state) => {
+                const updatedMessages = state.messages.map((msg) =>
+                    msg._id === updatedMessage._id ? updatedMessage : { ...msg, isPinned: false }
+                );
+
+                const newPinned = updatedMessage.isPinned ? updatedMessage : null;
+
+                return {
+                    messages: updatedMessages,
+                    pinnedMessage: newPinned,
+                };
+            });
+
+        } catch (err) {
+            console.error('Pin error:', err);
+            toast.error(err.response?.data?.message || 'Failed to pin message');
+        }
+    },
+
     // todo: optimiz this one later
     setSelectedUser: (selectedUser) => set({ selectedUser }),
 }));

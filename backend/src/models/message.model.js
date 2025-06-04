@@ -18,6 +18,10 @@ const messageSchema = new mongoose.Schema({
     image: {
         type: String,
     },
+    isPinned: {
+        type: Boolean,
+        default: false,
+    },
 }, { timestamps: true })
 
 const Message = mongoose.model("Message", messageSchema);
