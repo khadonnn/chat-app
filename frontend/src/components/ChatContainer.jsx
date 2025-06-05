@@ -125,7 +125,7 @@ const ChatContainer = () => {
                                 onClick={() =>
                                     pinMessage(message._id, !message.isPinned)
                                 }
-                                className='absolute top-1 right-2 text-sm opacity-0 group-hover:opacity-100 transition'
+                                className='absolute top-0 right-0 text-sm opacity-100 md:opacity-0 md:group-hover:opacity-100 transition'
                                 title={message.isPinned ? 'Bỏ ghim' : 'Ghim'}
                             >
                                 📌

@@ -1,6 +1,6 @@
-✨ Full Stack Realtime Chat App ✨
+## 🔥 Realtime Chat App 🔥
 
-# Highlights:
+## Highlights:
 
 🌟 Tech stack: MERN + Socket.io + TailwindCSS + Daisy UI
 🤩 Pages: Login && Register + Home + Setting + Profile + Discover
@@ -9,3 +9,11 @@
 🌍 Global state management with Zustand
 🎨 Theme selection
 📌 Pin messages list
+
+## Review Pages:
+
+🤗 Login && Register: ![Login](./public/assets/login.png)
+🥳 Home page: ![Homepage](./public/assets/chat.png)
+😎 Profile page: ![Profile](./public/assets/profile.png)
+🎨 Setting page: ![Setting](./public/assets/setting.png)
+💕 Discover page: ![Discover](./public/assets/discover.png)
