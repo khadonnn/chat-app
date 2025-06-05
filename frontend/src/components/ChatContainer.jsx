@@ -13,7 +13,7 @@ const ChatContainer = () => {
         selectedUser,
         subscribeToMessages,
         unsubscribeFromMessages,
-        pinnedMessage,
+        pinnedMessages,
         pinMessage,
     } = useChatStore();
     const { authUser } = useAuthStore();
@@ -42,34 +42,37 @@ const ChatContainer = () => {
             </div>
         );
     }
+    // console.log('pinnedMessages', pinnedMessages);
 
     return (
         <div className='flex-1 flex flex-col overflow-auto'>
             <ChatHeader />
             {/* Phần hiển thị tin nhắn được ghim */}
-            {pinnedMessage && (
+            {pinnedMessages.length > 0 && (
                 <div className='relative bg-yellow-100 p-3 rounded-lg border-l-4 border-yellow-500 m-4 h-[60px] overflow-hidden flex items-center justify-between'>
                     <div className='flex items-center gap-2 overflow-hidden'>
                         <p className='text-sm font-medium text-gray-800 shrink-0'>
                             📌 Ghim:
                         </p>
-                        {pinnedMessage?.image && (
+                        {pinnedMessages.at(-1)?.image && (
                             <img
-                                src={pinnedMessage.image}
+                                src={pinnedMessages.at(-1).image}
                                 alt='pinned'
                                 className='h-[40px] w-auto rounded shrink-0'
                             />
                         )}
-                        {pinnedMessage?.text && (
+                        {pinnedMessages.at(-1)?.text && (
                             <p className='text-gray-700 truncate'>
-                                {pinnedMessage.text}
+                                {pinnedMessages.at(-1).text}
                             </p>
                         )}
                     </div>
 
-                    {/* Nút đóng */}
+                    {/* Nút bỏ ghim tin mới nhất */}
                     <button
-                        onClick={() => pinMessage(pinnedMessage._id, false)}
+                        onClick={() =>
+                            pinMessage(pinnedMessages.at(-1)._id, false)
+                        }
                         className='text-gray-500 hover:text-red-600 ml-4'
                         title='Bỏ ghim'
                     >
@@ -77,7 +80,6 @@ const ChatContainer = () => {
                     </button>
                 </div>
             )}
-
             <div className='flex-1 overflow-y-auto p-4 space-y-4'>
                 {messages.map((message) => (
                     <div

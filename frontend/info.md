@@ -51,3 +51,31 @@ io.emit() is used to send events to all connected clients
 
 \*fix selecuser send wrong person
 if (newMessage.senderId !== selectedUser.\_id) return;
+======
+
+## Deploy backend and frontend in 1 folder
+
+```js
+import path from 'path';
+const __dirname = path.resolve();
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, '../frontend', 'dist', 'index.html'));
+    });
+}
+```
+
+```js
+import axios from 'axios';
+
+export const axiosInstance = axios.create({
+    baseURL:
+        import.meta.MODE === 'development'
+            ? 'http://localhost:8080/api'
+            : '/api',
+    withCredentials: true,
+});
+```

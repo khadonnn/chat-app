@@ -1,16 +1,22 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useChatStore } from '../store/useChatStore';
 import SidebarSkeleton from './skeletons/SidebarSkeleton';
 import { useAuthStore } from '../store/useAuthStore';
 import { Plus, Users } from 'lucide-react';
 
 const Sidebar = () => {
-    const { getUsers, users, selectedUser, setSelectedUser, isUserLoading } =
+    const { getUsers, selectedUser, setSelectedUser, isUserLoading, users } =
         useChatStore();
     const { onlineUsers } = useAuthStore();
+    const [showOnlineOnly, setShowOnlineOnly] = useState(false);
+
     useEffect(() => {
         getUsers();
     }, [getUsers]);
+    const filteredUsers = showOnlineOnly
+        ? users.filter((user) => onlineUsers.includes(user._id))
+        : users;
+
     if (isUserLoading) return <SidebarSkeleton />;
     return (
         <aside className='h-full w-20 lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200'>
@@ -21,16 +27,31 @@ const Sidebar = () => {
                         Contacts
                     </span>
                 </div>
+
                 <div className='tooltip tooltip-right ' data-tip='Create room'>
                     <button className='btn btn-xs btn-ghost'>
                         <Plus className='size-6' />
                     </button>
                 </div>
             </div>
-
+            {/* online users */}
+            <div className='mt-3 hidden lg:flex items-center gap-2'>
+                <label className='cursor-pointer flex items-center gap-2'>
+                    <input
+                        type='checkbox'
+                        checked={showOnlineOnly}
+                        onChange={(e) => setShowOnlineOnly(e.target.checked)}
+                        className='checkbox checkbox-sm'
+                    />
+                    <span className='text-sm'>Show Online Only</span>
+                </label>
+                <span className='text-xs text-zinc-500'>
+                    ({onlineUsers.length - 1} online)
+                </span>
+            </div>
             {/* todo: online filter toggle */}
             <div className='overflow-y-auto w-full py-2'>
-                {users.map((user) => (
+                {filteredUsers.map((user) => (
                     <button
                         key={user._id}
                         onClick={() => setSelectedUser(user)}
@@ -65,6 +86,11 @@ const Sidebar = () => {
                         </div>
                     </button>
                 ))}
+                {filteredUsers.length === 0 && (
+                    <div className='text-center text-zinc-500 py-4'>
+                        No online users
+                    </div>
+                )}
             </div>
         </aside>
     );

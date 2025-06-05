@@ -6,6 +6,7 @@ export const getUsersForSidebar = async (req, res) => {
     try {
         const loggInUserId = req.user._id;
         const filteredUsers = await User.find({ _id: { $ne: loggInUserId } }).select("-password");
+
         res.status(200).json(filteredUsers)
     } catch (error) {
         console.log("Error in getUserForSidebar");
@@ -81,28 +82,14 @@ export const pinMessage = async (req, res) => {
             return res.status(404).json({ error: 'Message not found' });
         }
 
-        if (isPinned) {
-            await Message.updateMany(
-                {
-                    isPinned: true,
-                    $or: [
-                        {
-                            senderId: messageToPin.senderId,
-                            receiverId: messageToPin.receiverId
-                        },
-                        {
-                            senderId: messageToPin.receiverId,
-                            receiverId: messageToPin.senderId
-                        }
-                    ]
-                },
-                { $set: { isPinned: false } }
-            );
-        }
+        // Bỏ đoạn updateMany để không bỏ ghim các tin nhắn khác
 
         const updatedMessage = await Message.findByIdAndUpdate(
             messageId,
-            { isPinned },
+            {
+                isPinned,
+                pinnedAt: isPinned ? new Date() : null,
+            },
             { new: true }
         );
 
@@ -112,6 +99,7 @@ export const pinMessage = async (req, res) => {
         res.status(500).json({ error: 'Failed to update pin status' });
     }
 }
+
 
 
 // export const sendMessage = async (req, res) => {

@@ -11,11 +11,12 @@ export const useChatStore = create((set, get) => ({
     isTyping: false,
     isSendingMessage: false,
     onlineUsers: [],
-    pinnedMessage: null,
+    pinnedMessages: [],
     getUsers: async () => {
         set({ isUserLoading: true });
         try {
             const res = await axiosInstance.get("/messages/users");
+
             set({ users: res.data });
         } catch (error) {
             toast.error(error.response.data.message);
@@ -27,11 +28,18 @@ export const useChatStore = create((set, get) => ({
         set({ isMessagesLoading: true });
         try {
             const res = await axiosInstance.get(`/messages/${userId}`);
-            const messages = res.data
-            const pinned = messages.find((msg) => msg.isPinned) || null;
-            set({ messages, pinnedMessage: pinned });
+            const messages = res.data;
+
+            const pinned = messages
+                .filter((msg) => msg.isPinned)
+                .sort((a, b) => new Date(a.pinnedAt) - new Date(b.pinnedAt));
+
+            set({
+                messages,
+                pinnedMessages: pinned,
+            });
         } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error(error.response?.data?.message || 'Lỗi tải tin nhắn');
         } finally {
             set({ isMessagesLoading: false });
         }
@@ -81,26 +89,33 @@ export const useChatStore = create((set, get) => ({
                 isPinned,
             });
 
-            const updatedMessage = res.data; // ✅ dùng res.data, không phải .json()
+            const updatedMessage = res.data;
 
             set((state) => {
                 const updatedMessages = state.messages.map((msg) =>
-                    msg._id === updatedMessage._id ? updatedMessage : { ...msg, isPinned: false }
+                    msg._id === updatedMessage._id ? updatedMessage : msg
                 );
 
-                const newPinned = updatedMessage.isPinned ? updatedMessage : null;
+                let updatedPinnedMessages = state.pinnedMessages.filter(
+                    (msg) => msg._id !== updatedMessage._id
+                );
+
+                if (updatedMessage.isPinned) {
+                    updatedPinnedMessages.push(updatedMessage);
+                    // Không cần sort lại, vì pinnedAt đã đúng
+                }
 
                 return {
                     messages: updatedMessages,
-                    pinnedMessage: newPinned,
+                    pinnedMessages: updatedPinnedMessages,
                 };
             });
-
         } catch (err) {
             console.error('Pin error:', err);
             toast.error(err.response?.data?.message || 'Failed to pin message');
         }
     },
+
 
     // todo: optimiz this one later
     setSelectedUser: (selectedUser) => set({ selectedUser }),

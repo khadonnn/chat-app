@@ -22,6 +22,7 @@ const messageSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    pinnedAt: { type: Date, default: null },
 }, { timestamps: true })
 
 const Message = mongoose.model("Message", messageSchema);

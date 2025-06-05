@@ -6,7 +6,6 @@ import ScrambledText from '../components/ui/ScrambledText';
 import LoginCard from '../components/LoginCard';
 import SplitTextGsap from '../components/SplitText.jsx';
 import { motion as Motion } from 'framer-motion';
-import FallingTextDemo from '../components/FallingTextDemo.jsx';
 const SignUpPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({

@@ -1,23 +1,11 @@
 ✨ Full Stack Realtime Chat App ✨
 
-# Setup .env file
+# Highlights:
 
-```
-MONGODB_URI=...
-PORT=5001
-JWT_SECRET=...
-
-CLOUDINARY_CLOUD_NAME=...
-CLOUDINARY_API_KEY=...
-CLOUDINARY_API_SECRET=...
-
-NODE_ENV=development
-```
-
-# Build the app
-
-`npm run build`
-
-# Start the app
-
-`npm start`
+🌟 Tech stack: MERN + Socket.io + TailwindCSS + Daisy UI
+🤩 Pages: Login && Register + Home + Setting + Profile + Discover
+😎 Authentication && Authorization with JWT
+🚀 Real-time messaging with socket.io
+🌍 Global state management with Zustand
+🎨 Theme selection
+📌 Pin messages list
