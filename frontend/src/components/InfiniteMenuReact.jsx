@@ -1,25 +1,25 @@
 import InfiniteMenu from './ui/InfiniteMenu.jsx';
 const items = [
     {
-        image: 'https://picsum.photos/300/300',
+        image: 'https://picsum.photos/seed/1/300/300',
         link: 'https://google.com/',
         title: 'Friend 1',
         description: 'This is pretty cool, right?',
     },
     {
-        image: 'https://picsum.photos/400/400',
+        image: 'https://picsum.photos/seed/2/400/400',
         link: 'https://google.com/',
         title: 'Friend 2',
         description: 'This chat is fantastic!',
     },
     {
-        image: 'https://picsum.photos/500/500',
+        image: 'https://picsum.photos/seed/3/500/500',
         link: 'https://google.com/',
         title: 'Friend 3',
         description: 'More friends, more fun!',
     },
     {
-        image: 'https://picsum.photos/600/600',
+        image: 'https://picsum.photos/seed/4/600/600',
         link: 'https://google.com/',
         title: 'Friend 4',
         description: 'Connect with me!',

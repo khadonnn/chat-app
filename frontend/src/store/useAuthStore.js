@@ -49,7 +49,7 @@ export const useAuthStore = create((set, get) => ({
             get().connectSocket();
         } catch (error) {
             console.log("Error in login", error);
-            toast.error(error.response.data.message);
+            toast.error("Invalid email or password");
         } finally {
             set({ isLoggingIn: false });
         }
@@ -62,7 +62,7 @@ export const useAuthStore = create((set, get) => ({
             get().disconnectSocket();
         } catch (error) {
             console.log("Error in logout", error);
-            toast.error(error.response.data.message);
+            toast.error("Logout failed");
         }
     },
     updateProfile: async (data) => {
@@ -73,7 +73,7 @@ export const useAuthStore = create((set, get) => ({
             toast.success("Profile updated successfully");
         } catch (error) {
             console.log("error in update profile:", error);
-            toast.error(error.response.data.message);
+            toast.error("Failed to update profile");
         } finally {
             set({ isUpdatingProfile: false });
         }
