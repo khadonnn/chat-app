@@ -3,23 +3,29 @@ import { useChatStore } from '../store/useChatStore';
 import SidebarSkeleton from './skeletons/SidebarSkeleton';
 import { useAuthStore } from '../store/useAuthStore';
 import { Plus, Users } from 'lucide-react';
+import SearchInput from './chat-function/SearchInput';
 
 const Sidebar = () => {
     const { getUsers, selectedUser, setSelectedUser, isUserLoading, users } =
         useChatStore();
     const { onlineUsers } = useAuthStore();
     const [showOnlineOnly, setShowOnlineOnly] = useState(false);
+    const [searchResults, setSearchResults] = useState(null);
 
     useEffect(() => {
         getUsers();
     }, [getUsers]);
+    const baseUsers = searchResults || users;
+
     const filteredUsers = showOnlineOnly
-        ? users.filter((user) => onlineUsers.includes(user._id))
-        : users;
+        ? baseUsers.filter((user) => onlineUsers.includes(user._id))
+        : baseUsers;
 
     if (isUserLoading) return <SidebarSkeleton />;
     return (
         <aside className='h-full w-20 lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200'>
+            {/* search */}
+            <SearchInput users={users} onResults={setSearchResults} />
             <div className='border-b border-base-300 w-full p-4 flex justify-between items-center'>
                 <div className='flex items-center gap-2'>
                     <Users className='size-6' />
@@ -34,6 +40,7 @@ const Sidebar = () => {
                     </button>
                 </div>
             </div>
+
             {/* online users */}
             <div className='mt-3 hidden lg:flex items-center gap-2'>
                 <label className='cursor-pointer flex items-center gap-2'>

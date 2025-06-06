@@ -9,7 +9,10 @@ const messageSchema = new mongoose.Schema({
     receiverId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true
+    },
+    roomId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Room",
     },
     text: {
         type: String,
@@ -24,6 +27,14 @@ const messageSchema = new mongoose.Schema({
     },
     pinnedAt: { type: Date, default: null },
 }, { timestamps: true })
+
+messageSchema.pre('validate', function (next) {
+    if (!this.receiverId && !this.roomId) {
+        this.invalidate('receiverId', 'Phải có receiverId hoặc roomId');
+        this.invalidate('roomId', 'Phải có receiverId hoặc roomId');
+    }
+    next();
+});
 
 const Message = mongoose.model("Message", messageSchema);
 export default Message

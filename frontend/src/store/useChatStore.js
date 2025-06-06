@@ -19,7 +19,8 @@ export const useChatStore = create((set, get) => ({
 
             set({ users: res.data });
         } catch (error) {
-            toast.error(error.response.data.message);
+            console.log("Error in getUsers", error);
+            toast.error("Failed to load users");
         } finally {
             set({ isUserLoading: false });
         }
@@ -116,7 +117,11 @@ export const useChatStore = create((set, get) => ({
         }
     },
 
-
+    searchUsers: async (query) => {
+        const res = await fetch(`/api/search-users?query=${query}`);
+        const data = await res.json();
+        return data.users; // hoặc data, tùy theo API
+    },
     // todo: optimiz this one later
     setSelectedUser: (selectedUser) => set({ selectedUser }),
 }));

@@ -99,7 +99,23 @@ export const pinMessage = async (req, res) => {
         res.status(500).json({ error: 'Failed to update pin status' });
     }
 }
+export const createRoom = async (req, res) => {
+    const { name, participants } = req.body;
+    const userId = req.user._id;
 
+    const newRoom = new Room({
+        name,
+        participants,
+        createdBy: userId,
+    });
+
+    await newRoom.save();
+
+    // Có thể gửi socket tới các thành viên
+    io.to(participants).emit("newRoomCreated", newRoom);
+
+    res.status(201).json(newRoom);
+}
 
 
 // export const sendMessage = async (req, res) => {

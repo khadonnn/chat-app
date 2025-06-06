@@ -19,6 +19,7 @@
     "framer-motion": "^12.15.0",
     "gl-matrix": "^3.4.3",
     "gsap": "^3.13.0",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.511.0",
     "matter-js": "^0.20.0",
     "meshline": "^3.3.1",

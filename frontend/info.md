@@ -79,3 +79,7 @@ export const axiosInstance = axios.create({
     withCredentials: true,
 });
 ```
+
+# search
+
+`npm install lodash`

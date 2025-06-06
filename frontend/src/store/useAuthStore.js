@@ -48,8 +48,8 @@ export const useAuthStore = create((set, get) => ({
 
             get().connectSocket();
         } catch (error) {
-            console.log("Error in login", error);
             toast.error("Invalid email or password");
+            console.log("Error in login", error);
         } finally {
             set({ isLoggingIn: false });
         }
