@@ -24,13 +24,13 @@ const SearchInput = ({ users, onResults, placeholder = 'Search...' }) => {
     }, [query, users]);
 
     return (
-        <div className='form-control w-full h-10 max-w-sm mt-2 px-2'>
-            <div className='input input-bordered flex items-center gap-2'>
+        <div className='form-control w-full h-10 mt-2 px-2 sm:px-0 max-w-sm mx-auto'>
+            <div className='input input-bordered flex items-center gap-2 w-full px-2'>
                 <Search className='w-5 h-5 text-base-content/60' />
                 <input
                     type='text'
                     placeholder={placeholder}
-                    className='grow outline-none'
+                    className='grow outline-none '
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                 />

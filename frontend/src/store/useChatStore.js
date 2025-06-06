@@ -12,6 +12,7 @@ export const useChatStore = create((set, get) => ({
     isSendingMessage: false,
     onlineUsers: [],
     pinnedMessages: [],
+
     getUsers: async () => {
         set({ isUserLoading: true });
         try {

@@ -83,3 +83,45 @@ export const axiosInstance = axios.create({
 # search
 
 `npm install lodash`
+
+# route /:id nuot cac route khac, nen dat cuoi
+
+`router.get("/:id", protectRoute, getMessages) `
+
+====
+senderId là object → trả về [object Object]
+
+> not const isMe = msg.senderId?.toString() === authUser.\_id?.toString();
+>
+> recommend: const senderIdString = msg.senderId?.\_id?.toString();
+> const isMe = senderIdString === authUser.\_id?.toString();
+> ====
+
+# Trung \_id
+
+```js
+/**
+ * Lọc danh sách tin nhắn để loại bỏ những tin có cùng _id (ưu tiên tin nhắn xuất hiện trước)
+ * @param {Array} messages - Mảng các tin nhắn
+ * @returns {Array} - Mảng tin nhắn không trùng lặp theo _id
+ */
+export function getUniqueMessages(messages) {
+    const seen = new Set();
+    const unique = [];
+
+    for (const msg of messages) {
+        if (!seen.has(msg._id)) {
+            seen.add(msg._id);
+            unique.push(msg);
+        }
+    }
+
+    return unique;
+}
+*how to use*
+set((state) => {
+  const newMessages = [...state.messages, incomingMsg];
+  return { messages: getUniqueMessages(newMessages) };
+});
+
+```
