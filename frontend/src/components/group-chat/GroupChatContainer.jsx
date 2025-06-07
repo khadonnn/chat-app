@@ -21,7 +21,7 @@ const RoomChatContainer = () => {
         participants,
         getRoomParticipants,
     } = useRoomStore();
-    console.log('selectedRoom', selectedRoom);
+
     const { authUser } = useAuthStore();
 
     const messageEndRef = useRef(null);

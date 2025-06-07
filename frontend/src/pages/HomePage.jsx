@@ -1,6 +1,7 @@
 import ChatContainer from '../components/ChatContainer';
 import DrawerRight from '../components/DrawerRight';
 import RoomChatContainer from '../components/group-chat/GroupChatContainer';
+import { GroupDrawerRight } from '../components/group-chat/GroupDrawerRight';
 import NoChatSelected from '../components/NoChatSelected';
 import Sidebar from '../components/Sidebar';
 import { useChatStore } from '../store/useChatStore';
@@ -27,6 +28,7 @@ const HomePage = () => {
                     </div>
                     <div className='absolute top-5 right-14'>
                         {selectedUser && <DrawerRight />}
+                        {selectedRoom && <GroupDrawerRight />}
                     </div>
                 </div>
             </div>
