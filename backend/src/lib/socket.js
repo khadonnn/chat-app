@@ -65,6 +65,47 @@ io.on("connection", (socket) => {
         io.to(roomId).emit("newRoomMessage", newMessage);
     });
 
+    // call video
+    socket.on("call-user", (data) => {
+        const receiverSocketId = userSocketMap[data.to];
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("incoming-call", {
+                from: data.from,
+                offer: data.offer
+            });
+        }
+    });
+
+    socket.on("answer-call", (data) => {
+        const receiverSocketId = userSocketMap[data.to];
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("call-accepted", {
+                from: data.from,
+                answer: data.answer
+            });
+        }
+    });
+
+    socket.on("ice-candidate", (data) => {
+        const receiverSocketId = userSocketMap[data.to];
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("ice-candidate", {
+                from: data.from,
+                candidate: data.candidate
+            });
+        }
+    });
+
+    socket.on("end-call", (data) => {
+        const receiverSocketId = userSocketMap[data.to];
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("call-ended", {
+                from: data.from
+            });
+        }
+    });
+
+
     socket.on("disconnect", () => {
         delete userSocketMap[userId];
         io.emit("getOnlineUsers", Object.keys(userSocketMap));

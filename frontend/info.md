@@ -125,3 +125,22 @@ set((state) => {
 });
 
 ```
+
+# video call
+
+```js
+Socket Event Definitions
+🔸 Client → Server
+call-user: gửi khi A muốn gọi B
+
+accept-call: B chấp nhận
+
+reject-call: B từ chối
+
+🔸 Server → Client
+incoming-call: thông báo đến B
+
+call-accepted: thông báo đến A
+
+call-rejected: thông báo đến A
+```

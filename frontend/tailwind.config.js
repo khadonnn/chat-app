@@ -18,6 +18,13 @@ export default {
       },
       animation: {
         marquee: 'marquee 15s linear infinite'
+      },
+      colors: {
+
+        'info': '#3abff8',
+        'success': '#36d399',
+        'warning': '#fbbd23',
+        'error': '#f87272',
       }
     }
   },

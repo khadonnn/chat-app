@@ -1,10 +1,14 @@
-import { useChatStore } from '../store/useChatStore';
 import { useEffect, useRef } from 'react';
-import MessageInput from './MessageInput';
 import ChatHeader from './ChatHeader';
+import MessageInput from './MessageInput';
 import MessageSkeleton from './skeletons/MessageSkeleton';
+import VideoCallPopup from './video-call/VideoCallPopup';
+
+import { useChatStore } from '../store/useChatStore';
 import { useAuthStore } from '../store/useAuthStore';
+import { useCallStore } from '../store/useVideoCallStore';
 import { formatMessageTime } from '../lib/utils';
+
 const ChatContainer = () => {
     const {
         messages,
@@ -16,24 +20,77 @@ const ChatContainer = () => {
         pinnedMessages,
         pinMessage,
     } = useChatStore();
-    const { authUser } = useAuthStore();
+
+    const { authUser, socket } = useAuthStore();
+    const { openCallPopup, closeCallPopup } = useCallStore();
+
     const messageEndRef = useRef(null);
+
+    // 1. Lấy tin nhắn
     useEffect(() => {
+        if (!selectedUser) return;
+
         getMessages(selectedUser._id);
         subscribeToMessages();
+
         return () => unsubscribeFromMessages();
-    }, [
-        selectedUser._id,
-        getMessages,
-        subscribeToMessages,
-        unsubscribeFromMessages,
-    ]);
-    //ref
+    }, [selectedUser?._id]);
+
+    // 2. Auto scroll
     useEffect(() => {
-        if (messageEndRef.current && messages)
+        if (messageEndRef.current)
             messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
-    if (isMessagesLoading) {
+
+    // 3. Lắng nghe sự kiện gọi đến
+    useEffect(() => {
+        if (!socket || !authUser) return;
+
+        const handleIncomingCall = ({ callerId, callerName }) => {
+            openCallPopup({
+                isCaller: false,
+                callerName,
+                calleeName: authUser.fullName,
+                calleeImage: selectedUser.profilePic || '/avatar.png',
+                onAccept: () => {
+                    socket.emit('accept-call', { to: callerId });
+                    console.log('Callee accepted, mở video UI');
+                },
+                onReject: () => {
+                    socket.emit('reject-call', { to: callerId });
+                    console.log('Callee từ chối');
+                },
+            });
+        };
+
+        socket.on('incoming-call', handleIncomingCall);
+
+        return () => {
+            socket.off('incoming-call', handleIncomingCall);
+        };
+    }, [socket, authUser, openCallPopup]);
+
+    // 4. Lắng nghe callee chấp nhận hoặc từ chối
+    useEffect(() => {
+        if (!socket) return;
+
+        socket.on('call-accepted', () => {
+            console.log('[caller] call accepted, open video UI');
+            // TODO: Hiện UI gọi video cho caller
+        });
+
+        socket.on('call-rejected', () => {
+            console.log('[caller] call rejected');
+            closeCallPopup();
+        });
+
+        return () => {
+            socket.off('call-accepted');
+            socket.off('call-rejected');
+        };
+    }, [socket, closeCallPopup]);
+
+    if (isMessagesLoading || !selectedUser) {
         return (
             <div className='flex-1 flex flex-col overflow-auto'>
                 <ChatHeader />
@@ -42,12 +99,13 @@ const ChatContainer = () => {
             </div>
         );
     }
-    // console.log('pinnedMessages', pinnedMessages);
 
     return (
         <div className='flex-1 flex flex-col overflow-auto'>
             <ChatHeader />
-            {/* Phần hiển thị tin nhắn được ghim */}
+            <VideoCallPopup />
+
+            {/* 🔖 Tin nhắn ghim */}
             {pinnedMessages.length > 0 && (
                 <div className='relative bg-yellow-100 p-3 rounded-lg border-l-4 border-yellow-500 m-4 h-[60px] overflow-hidden flex items-center justify-between'>
                     <div className='flex items-center gap-2 overflow-hidden'>
@@ -67,8 +125,6 @@ const ChatContainer = () => {
                             </p>
                         )}
                     </div>
-
-                    {/* Nút bỏ ghim tin mới nhất */}
                     <button
                         onClick={() =>
                             pinMessage(pinnedMessages.at(-1)._id, false)
@@ -80,6 +136,8 @@ const ChatContainer = () => {
                     </button>
                 </div>
             )}
+
+            {/* 💬 Tin nhắn */}
             <div className='flex-1 overflow-y-auto p-4 space-y-4'>
                 {messages.map((message) => (
                     <div
@@ -119,8 +177,6 @@ const ChatContainer = () => {
                                 />
                             )}
                             {message.text && <p>{message.text}</p>}
-
-                            {/* Nút ghim/bỏ ghim */}
                             <button
                                 onClick={() =>
                                     pinMessage(message._id, !message.isPinned)
@@ -134,8 +190,10 @@ const ChatContainer = () => {
                     </div>
                 ))}
             </div>
+
             <MessageInput />
         </div>
     );
 };
+
 export default ChatContainer;

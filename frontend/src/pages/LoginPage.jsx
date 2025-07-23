@@ -69,7 +69,7 @@ const SignUpPage = () => {
                                 <input
                                     type='email'
                                     className={`input input-bordered w-full pl-10`}
-                                    placeholder='you@example.com'
+                                    placeholder='khadon@gmail.com'
                                     value={formData.email}
                                     onChange={(e) =>
                                         setFormData({
@@ -94,7 +94,7 @@ const SignUpPage = () => {
                                 <input
                                     type={showPassword ? 'text' : 'password'}
                                     className={`input input-bordered w-full pl-10`}
-                                    placeholder='••••••••'
+                                    placeholder='123456'
                                     value={formData.password}
                                     onChange={(e) =>
                                         setFormData({

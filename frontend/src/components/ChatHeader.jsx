@@ -1,14 +1,44 @@
 import { useChatStore } from '../store/useChatStore';
 import { useAuthStore } from '../store/useAuthStore';
-import { X } from 'lucide-react';
+import { useCallStore } from '../store/useVideoCallStore';
+import { Video, X } from 'lucide-react';
+
 const ChatHeader = () => {
     const { selectedUser, setSelectedUser } = useChatStore();
-    const { onlineUsers } = useAuthStore();
+    const { authUser, socket, onlineUsers } = useAuthStore();
+
+    const { openCallPopup, closeCallPopup } = useCallStore();
+
+    const handleCallClick = () => {
+        if (!selectedUser || !authUser) return;
+
+        socket.emit('call-user', {
+            to: selectedUser._id,
+            from: authUser._id,
+            callerName: authUser.fullName,
+        });
+
+        openCallPopup({
+            isCaller: true,
+            callerName: authUser.fullName,
+            calleeName: selectedUser.fullName,
+            callerImage: authUser.profilePic || '/avatar.png',
+            calleeImage: selectedUser.profilePic || '/avatar.png',
+            onAccept: () => {
+                console.log('Caller accepted, mở video UI');
+            },
+            onReject: () => {
+                console.log('Caller huỷ gọi');
+                socket.emit('cancel-call', { to: selectedUser._id });
+                closeCallPopup();
+            },
+        });
+    };
+
     return (
         <div className='p-2.5 border-b border-base-300'>
             <div className='flex items-center justify-between'>
                 <div className='flex items-center gap-3'>
-                    {/* avatar */}
                     <div className='avatar relative'>
                         <div className='size-10 rounded-full '>
                             <img
@@ -23,7 +53,6 @@ const ChatHeader = () => {
                             )}
                         </div>
                     </div>
-                    {/* user info */}
                     <div className=''>
                         <h3 className='font-medium'>{selectedUser.fullName}</h3>
                         <p className='text-sm text-base-content/70'>
@@ -32,13 +61,22 @@ const ChatHeader = () => {
                                 : 'Offline'}
                         </p>
                     </div>
-                    {/* close button */}
                 </div>
-                <button onClick={() => setSelectedUser(null)}>
-                    <X />
-                </button>
+
+                <div className='flex items-center justify-between gap-3'>
+                    <div className='mr-16'>
+                        <Video
+                            className='text-success cursor-pointer'
+                            onClick={handleCallClick}
+                        />
+                    </div>
+                    <button onClick={() => setSelectedUser(null)}>
+                        <X className='text-error' />
+                    </button>
+                </div>
             </div>
         </div>
     );
 };
+
 export default ChatHeader;
