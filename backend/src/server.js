@@ -7,7 +7,7 @@ import messageRoutes from "./routes/message.route.js"
 import cors from "cors"
 import { app, server } from "./lib/socket.js"
 import path from "path";
-
+import './utils/cron-keep-alive.js'; // Import module để khởi động cron job
 
 const PORT = process.env.PORT || 8080
 const __dirname = path.resolve();
