@@ -19,13 +19,23 @@ const roomSchema = new mongoose.Schema(
             {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "User",
-                default: [], // Có thể để trống nếu tất cả đều là admin
+                default: [],
             },
         ],
         isGroup: {
             type: Boolean,
-            default: true, // Luôn là true với room
+            default: true,
         },
+        // --- THÊM HAI TRƯỜNG CHO ICON CLOUDINARY ---
+        roomIconUrl: {
+            type: String,
+            default: null, // URL ảnh đã được transform thành icon
+        },
+        roomIconPublicId: {
+            type: String,
+            default: null, // Public ID để dễ dàng xóa/thay thế icon cũ trên Cloudinary
+        },
+        // -------------------------------------------
         lastMessage: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Message",
@@ -39,4 +49,4 @@ const roomSchema = new mongoose.Schema(
 );
 
 const Room = mongoose.model("Room", roomSchema);
-export default Room
+export default Room;

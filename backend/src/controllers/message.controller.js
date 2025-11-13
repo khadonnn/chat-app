@@ -43,38 +43,56 @@ export const sendMessage = async (req, res) => {
         const senderId = req.user._id;
 
         let imageUrl = null;
+        let imagePublicId = null; // Khởi tạo biến lưu Public ID
 
+        // 1. Kiểm tra input tối thiểu
+        if (!text && !req.file) {
+            return res.status(400).json({ message: "Message cannot be empty (must contain text or an image)." });
+        }
+
+        // 2. Xử lý Upload ảnh lên Cloudinary
         if (req.file) {
             const result = await new Promise((resolve, reject) => {
-                cloudinary.uploader.upload_stream({ resource_type: 'image' }, (err, result) => {
+                cloudinary.uploader.upload_stream({
+                    resource_type: 'image',
+                    folder: 'chat-app-messages' // Tùy chọn: Đặt ảnh tin nhắn vào một folder riêng
+                }, (err, result) => {
                     if (err) reject(err);
                     else resolve(result);
                 }).end(req.file.buffer);
             });
 
             imageUrl = result.secure_url;
+            imagePublicId = result.public_id; // <-- LƯU Public ID từ kết quả Cloudinary
         }
 
+        // 3. Tạo tin nhắn mới
         const newMessage = new Message({
             senderId,
             receiverId,
             text,
-            image: imageUrl,
+            image: imageUrl, // Lưu URL ảnh
+            imagePublicId: imagePublicId, // <-- LƯU Public ID để phục vụ việc xóa sau này
         });
 
+        // 4. Lưu vào database
         await newMessage.save();
-        // todo: realtime chat =>socket.io
-        const recieverSocketId = getRecieverSocketId(receiverId)
+
+        // 5. Xử lý Realtime (Socket.io)
+        const recieverSocketId = getRecieverSocketId(receiverId);
         if (recieverSocketId) {
+            // Gửi tin nhắn đến người nhận
             io.to(recieverSocketId).emit("newMessage", newMessage);
         }
+
+        // 6. Phản hồi thành công
         res.status(200).json(newMessage);
+
     } catch (error) {
         console.error("Error in sendMessage:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 };
-
 export const pinMessage = async (req, res) => {
     try {
         const { isPinned } = req.body;

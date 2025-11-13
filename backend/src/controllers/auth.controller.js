@@ -61,17 +61,42 @@ export const logout = (req, res) => {
 
 export const updateProfile = async (req, res) => {
     try {
-        const { profilePic } = req.body
-        if (!profilePic) return res.status(400).send("Profile picture is required")
-        const userId = req.user._id
-        const uploadResponse = await cloudinary.uploader.upload(profilePic, {
-        })
-        const updateUser = await User.findByIdAndUpdate(userId, { profilePic: uploadResponse.secure_url }, { new: true })//secure_url in return object
-        res.status(200).json(updateUser)
+        const { profilePic } = req.body;
+        if (!profilePic) return res.status(400).json({ message: "Profile picture is required" });
+
+        const userId = req.user._id;
+
+        // 1. Tìm người dùng hiện tại để lấy Public ID cũ
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        let uploadResponse;
+
+        // 2. Xóa ảnh cũ trên Cloudinary nếu tồn tại Public ID
+        if (user.profilePicPublicId) {
+            await cloudinary.uploader.destroy(user.profilePicPublicId);
+        }
+
+        // 3. Upload ảnh mới
+        uploadResponse = await cloudinary.uploader.upload(profilePic, {
+            folder: "chat-app-profiles", // Nên đặt trong folder cụ thể
+        });
+
+        // 4. Cập nhật User với URL và Public ID mới
+        const updateUser = await User.findByIdAndUpdate(
+            userId,
+            {
+                profilePic: uploadResponse.secure_url,
+                profilePicPublicId: uploadResponse.public_id, // <-- LƯU Public ID
+            },
+            { new: true }
+        ).select("-password");
+
+        res.status(200).json(updateUser);
 
     } catch (error) {
-        console.log("Error in updateProfile");
-        res.status(500).json({ message: "Internal server error" })
+        console.log("Error in updateProfile:", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 }
 
